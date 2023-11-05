@@ -43,6 +43,11 @@
 //#include "TM_buffer_pFabric.h"
 //#include "TM_buffer_pifo.h"
 //#include "TM_buffer_pieo.h"
+//#include "TM_buffer_dr_pifo_hier.h"
+//#include "TM_buffer_DRR.h"
+//#include "TM_buffer_WRR.h"
+//#include "TM_buffer_WDRR.h"
+//#include "TM_buffer_RL_SP_NWC.h"
 
 std::shared_ptr<TM_buffer::buffer> TM_buffer::buffer_head = NULL; // added line
 
