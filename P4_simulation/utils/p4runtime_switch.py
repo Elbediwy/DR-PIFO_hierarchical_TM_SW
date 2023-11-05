@@ -123,7 +123,7 @@ class P4RuntimeSwitch(P4Switch):
         #args.append("-- --load-modules=/home/vagrant/dr_pifo_simulation/utils/user_externs_pFabric/pFabric.so ")
         #args.append("-- --load-modules=/home/vagrant/dr_pifo_simulation/utils/user_externs_pifo/pifo.so ")
         #args.append("-- --load-modules=/home/vagrant/dr_pifo_simulation/utils/user_externs_pieo/pieo.so ")
-        #args.append("-- --load-modules=/home/vagrant/dr_pifo_simulation/utils/user_externs_hier/hier.so ")
+        #args.append("-- --load-modules=/home/vagrant/dr_pifo_simulation/utils/user_externs_dr_pifo/DR_PIFO.so ")
         #args.append("-- --load-modules=/home/vagrant/dr_pifo_simulation/utils/user_externs_DRR/DRR.so ")
         #args.append("-- --load-modules=/home/vagrant/dr_pifo_simulation/utils/user_externs_WRR/WRR.so ")
         #args.append("-- --load-modules=/home/vagrant/dr_pifo_simulation/utils/user_externs_WDRR/WDRR.so ")
