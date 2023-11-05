@@ -13,7 +13,7 @@ Optional : you can find these tools installed in the provided VM from https://gi
 3. Copy the files provided in "P4_simulation/BMv2 Files/" to the directory of the simple_switch in your system "behavioral-model/targets/simple_switch" (replace the already existed files, if needed)
 
 4. In "behavioral-model/targets/simple_switch/simple_switch.cpp", for the lines from 42-45, include only the model of the packet scheduler that you would like to test.
-https://github.com/Elbediwy/DR-PIFO_20_policies/blob/2994078eebf8e87734d30b587b3f181268ef7d87/P4_simulation/BMv2%20files/simple_switch.cpp#L42-L50
+https://github.com/Elbediwy/DR-PIFO_20_policies/blob/b6a6cc20bb2aeea6c95e35c610ab184da1e994c8/P4_simulation/BMv2%20files/simple_switch.cpp#L42-L50
 
 For example, if you uncommented only "#include "TM_buffer_dr_pifo.h"", so you will use the DR-PIFO packet scheduler model in the BMv2 model. 
 
@@ -38,12 +38,12 @@ sudo make
 ```
 
 7. For the DR-PIFO, in the "P4_simulation/utils/user_externs_dr_pifo/p4runtime_switch.py", uncomment the line refers to the folder "user_externs_dr_pifo", from line 122 to 130 (which is 122 for the DR-PIFO).
-https://github.com/Elbediwy/DR-PIFO_20_policies/blob/2994078eebf8e87734d30b587b3f181268ef7d87/P4_simulation/utils/p4runtime_switch.py#L122-L125
+https://github.com/Elbediwy/DR-PIFO_20_policies/blob/b6a6cc20bb2aeea6c95e35c610ab184da1e994c8/P4_simulation/utils/p4runtime_switch.py#L122-L130
 
-8. Copy the content of the file corresponding to the desired policy.
+9. Copy the content of the file corresponding to the desired policy.
 For example, to implement (P6) Least Attained Service scheduling policy, choose "P4_simulation/program/qos/p4 programs/P6_LAS.p4" to this file "P4_simulation/program/qos/qos.p4"
 
-9. In "P4_simulation/program/qos/", run these commands :
+10. In "P4_simulation/program/qos/", run these commands :
 ```bash
 sudo make stop
 sudo make clean
