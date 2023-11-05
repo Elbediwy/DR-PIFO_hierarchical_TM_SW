@@ -123,6 +123,11 @@ class P4RuntimeSwitch(P4Switch):
         #args.append("-- --load-modules=/home/vagrant/dr_pifo_simulation/utils/user_externs_pFabric/pFabric.so ")
         #args.append("-- --load-modules=/home/vagrant/dr_pifo_simulation/utils/user_externs_pifo/pifo.so ")
         #args.append("-- --load-modules=/home/vagrant/dr_pifo_simulation/utils/user_externs_pieo/pieo.so ")
+        #args.append("-- --load-modules=/home/vagrant/dr_pifo_simulation/utils/user_externs_hier/hier.so ")
+        #args.append("-- --load-modules=/home/vagrant/dr_pifo_simulation/utils/user_externs_DRR/DRR.so ")
+        #args.append("-- --load-modules=/home/vagrant/dr_pifo_simulation/utils/user_externs_WRR/WRR.so ")
+        #args.append("-- --load-modules=/home/vagrant/dr_pifo_simulation/utils/user_externs_WDRR/WDRR.so ")
+        #args.append("-- --load-modules=/home/vagrant/dr_pifo_simulation/utils/user_externs_RL_SP/RL_SP_NWC.so ")
         if self.grpc_port:
             args.append("--grpc-server-addr 0.0.0.0:" + str(self.grpc_port))
         cmd = ' '.join(args)
