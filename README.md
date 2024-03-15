@@ -1,23 +1,17 @@
-# Implementation of 20 scheduling and shaping policies using the DR-PIFO Traffic Manager, BMv2 target switches, Mininet and P4 language.
-# The details of the scheduling policies can be found in the attached technical report.
-
-We provide the implementation of 20 scheduling schemes from P1 to P20. All policies are implemented using either the DR-PIFO TM or the hierarchical TM (P15 and P20), except for (P1, P2, P3, P5). These 4 policies did not utilize the DR-PIFO traffic manager, as they don't have a naturally compatible version (rank-based version).
+# The DR-PIFO hierarchical Traffic Manager is implemented and deployed in this software programmable networking environment
+We provide here an example of a case study applying two-level hierarchy, with Strict Prirority scheduling on the root (the first level), and Deficit Round Robin (DRR) on the leaf nodes (the second level).
+The DR-PIFO also supports, by default, First-In-First-Out (FIFO) queues prior to the lowest level, (here, before the DRR level).
+This prototype provides two-level hierarchy, with two leaf nodes/queues, and each leaf supports up to 50 different tarffic flows'/users' IDs. 
 
 # To build and run:
-
 1. Download the provided folders in "P4_simulation/" and save them in the main directory of your workspace.
 
 2. Make sure these tools are installed in your workspace : Mininet, P4c, P4runtime and BMv2.
 Optional : you can find these tools installed in the provided VM from https://github.com/p4lang/tutorials
 
-3. Copy the files provided in "P4_simulation/BMv2 Files/" to the directory of the simple_switch in your system "behavioral-model/targets/simple_switch" (replace the already existed files, if needed)
+3. Copy the files provided in "P4_simulation/BMv2 Files/" to the directory of the simple_switch in your system "behavioral-model/targets/simple_switch" (replace the existed files, if needed)
 
-4. In "behavioral-model/targets/simple_switch/simple_switch.cpp", for the lines from 42-45, include only the model of the packet scheduler that you would like to test.
-https://github.com/Elbediwy/DR-PIFO_20_policies/blob/b6a6cc20bb2aeea6c95e35c610ab184da1e994c8/P4_simulation/BMv2%20files/simple_switch.cpp#L42-L50
-
-For example, if you uncommented only "#include "TM_buffer_dr_pifo.h"", so you will use the DR-PIFO packet scheduler model in the BMv2 model. 
-
-6. In the directory of BMv2 "behavioral-model/", run these commands : 
+4. In the directory of BMv2 "behavioral-model/", run these commands : 
 ```bash
 ./autogen.sh
 ./configure
@@ -31,26 +25,25 @@ sudo make
 sudo make install
 sudo ldconfig
 ```
-6. For the DR-PIFO, in the "P4_simulation/utils/user_externs_dr_pifo/", run these commands : 
+5. In the DR-PIFO utils direcotry "P4_simulation/utils/user_externs_dr_pifo/", it is prefered to run these commands : 
 ```bash
 sudo make clean
 sudo make
 ```
 
-7. For the DR-PIFO, in the "P4_simulation/utils/user_externs_dr_pifo/p4runtime_switch.py", uncomment the line refers to the folder "user_externs_dr_pifo", from line 122 to 130 (which is 122 for the DR-PIFO).
-https://github.com/Elbediwy/DR-PIFO_20_policies/blob/b6a6cc20bb2aeea6c95e35c610ab184da1e994c8/P4_simulation/utils/p4runtime_switch.py#L122-L130
-
-9. Copy the content of the file corresponding to the desired policy.
-For example, to implement (P6) Least Attained Service scheduling policy, choose "P4_simulation/program/qos/p4 programs/P6_LAS.p4" to this file "P4_simulation/program/qos/qos.p4"
-
-10. In "P4_simulation/program/qos/", run these commands :
+6. In "P4_simulation/program/qos/", run these commands (A P4 program of the adopted case study is defined in the qos.p4 file) :
 ```bash
 sudo make stop
 sudo make clean
 sudo make
 ```
 
-10. Then, wait until the simulation is finished. (~ 30 mins)
+7. Then, wait until the simulation is finished. (~ 30 mins)
 
-To find the log files of each switch, go to "P4_simulation/utils/program/qos/logs", and to find the received packets by each receiving host, go to "P4_simulation/utils/program/qos/receiver_h'#host_id'".
-You can modify the main run file "P4_simulation/utils/run_execrise.py" to apply different workloads.
+# Useful information to apply more case studies
+* We would like to refer you to the attached "pre-defined_interfaces.pdf" file on this directory, which includes the required input data and control signals to efficiently communicate and control with the deployed TM. (Note: these inputs can alter the behavior of the DR-PIFO TM to express different scheduling/shaping schemes)
+* To find the log files of each switch, go to "P4_simulation/utils/program/qos/logs"
+* To find the received packets by each receiving host, go to "P4_simulation/utils/program/qos/receiver_h'#host_id'", using the receiver/sending hosts log files, one can calculate the completion time of each flow.
+* You can modify the main run file "P4_simulation/utils/run_execrise.py" to apply different workloads, https://github.com/Elbediwy/DR-PIFO_hierarchical_TM_SW/blob/ab058788aa63ed15169f3e3cdbbc90249e4b79d3/P4_simulation/utils/run_exercise.py#L361
+* You can change the workload itself, from the workload assignment file "P4_simulation/utils/run_execrise.py" and the workload definitions on "P4_simulation/utils/program/workload"
+* If you would like to change the underlying architecture (of the DR-PIFO TM), or extend it, you can modify the source code of our DR-PIFO on the "DR-PIFO_hierarhcical_TM_SW/BMv2 files/TM_buffer_dr_pifo.h" module.
