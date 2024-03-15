@@ -39,7 +39,7 @@
 #include "register_access.h"
 #include "semaphore_TM.h"
 
-#include "TM_buffer_dr_pifo_hier.h"
+#include "TM_buffer_dr_pifo.h"
 
 //#include "TM_buffer_dr_pifo.h"
 //#include "TM_buffer_pFabric.h"
