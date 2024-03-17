@@ -149,7 +149,7 @@ control MyIngress(inout headers hdr,
     bit <48> level_0_rank;
     bit <48> level_1_rank;
     bit <48> eligible_time			= 200000;
-	bit <48> in_arrival_time		= 0;
+    bit <48> in_arrival_time		= 0;
     bit <48> in_pkt_ptr;
     bit <48> in_force_deq_flow_id	= 0;
     bit <48> update_flow_id			= 0;
@@ -175,8 +175,6 @@ control MyIngress(inout headers hdr,
 	// Action to assign the Flow ID for each packet
     action assign_flow_id(bit <48> flow_id) {
         in_flow_id = flow_id;
-	floor_extern_obj.floor((bit<48>)(10), (bit<48>)(2), in_flow_id);
-        register_last_ptr.write(0,in_flow_id);
     }
 
 	// Lookup Table for the Flow ID assignment
@@ -210,34 +208,34 @@ control MyIngress(inout headers hdr,
         in_pkt_ptr = in_pkt_ptr + (bit<48>)(1);
         register_last_ptr.write(0,in_pkt_ptr);    
 		
-		// group multiple flows into 1 queue at the lowest level (leaf queues), OPTIONAL
-		// because we have 72 flows, but we only have 8 leaf queues.
-		floor_extern_obj.floor(in_flow_id, (bit<48>)(10), flow_id_at_level_1);
+	// group multiple flows into 1 queue at the lowest level (leaf queues), OPTIONAL
+	// because we have 72 flows, but we only have 8 leaf queues.
+	floor_extern_obj.floor(in_flow_id, (bit<48>)(10), flow_id_at_level_1);
 	
-		reset_time = 0;
-		in_arrival_time = standard_metadata.ingress_global_timestamp;
+	reset_time = 0;
+	in_arrival_time = standard_metadata.ingress_global_timestamp;
 		
-		// DRR : rank computations
-		all_received_bytes.read(all_received_bytes_value, (bit<32>)(flow_id_at_level_1));
-		current_dequeue_cycle.read(current_dequeue_cycle_value, 0);
+	// DRR : rank computations
+	all_received_bytes.read(all_received_bytes_value, (bit<32>)(flow_id_at_level_1));
+	current_dequeue_cycle.read(current_dequeue_cycle_value, 0);
 		
-		if(all_received_bytes_value < (current_dequeue_cycle_value * quota_value))
-		{		
-			all_received_bytes_value = current_dequeue_cycle_value * quota_value;
-		}
+	if(all_received_bytes_value < (current_dequeue_cycle_value * quota_value))
+	{		
+		all_received_bytes_value = current_dequeue_cycle_value * quota_value;
+	}
 
-		all_received_bytes_value = all_received_bytes_value + (bit<48>)(hdr.ipv4.options);
-		all_received_bytes.write((bit<32>)(flow_id_at_level_1), all_received_bytes_value);
-		floor_extern_obj.floor(all_received_bytes_value - (bit<48>)(1), quota_value, level_0_rank);
+	all_received_bytes_value = all_received_bytes_value + (bit<48>)(hdr.ipv4.options);
+	all_received_bytes.write((bit<32>)(flow_id_at_level_1), all_received_bytes_value);
+	floor_extern_obj.floor(all_received_bytes_value - (bit<48>)(1), quota_value, level_0_rank);
 		
-		// round id 
-		standard_metadata.ingress_global_timestamp = level_0_rank; 
-		// Saving the round ID in this standard metadata, because the replaced standard metadata won't be needed later, and it reserve space anyways.
+	// round id 
+	standard_metadata.ingress_global_timestamp = level_0_rank; 
+	// Saving the round ID in this standard metadata, because the replaced standard metadata won't be needed later, and it reserve space anyways.
 
-		level_0_rank = (level_0_rank * max_possible_sent_pkts) + flow_id_at_level_1 + 1;
+	level_0_rank = (level_0_rank * max_possible_sent_pkts) + flow_id_at_level_1 + 1;
 
-		// SP : rank computations
-		// level_1_rank = hdr.ipv4.diffserv; // this is more generic, but here we use the flow ID to determine the Strict Priority
+	// SP : rank computations
+	// level_1_rank = hdr.ipv4.diffserv; // this is more generic, but here we use the flow ID to determine the Strict Priority
         if(in_flow_id < (bit<48>)(40))
         {
             level_1_rank = 1; // high priority, low rank
@@ -248,9 +246,9 @@ control MyIngress(inout headers hdr,
         }
 		
         // pass the ranks of the processed packet to the hierarchical scheduler.
-		// each rank with the corresponding level ID.
-		my_DR_PIFO.pass_rank_values(level_0_rank,0);
-		my_DR_PIFO.pass_rank_values(level_1_rank,1);
+	// each rank with the corresponding level ID.
+	my_DR_PIFO.pass_rank_values(level_0_rank,0);
+	my_DR_PIFO.pass_rank_values(level_1_rank,1);
 
         if(hdr.ipv4.dstAddr == 0)
         {
@@ -258,10 +256,10 @@ control MyIngress(inout headers hdr,
         }
         else
         {	
-			in_flow_id = flow_id_at_level_1;
+		in_flow_id = flow_id_at_level_1;
 			
-			// pass the input data and control signals to the hierarchical scheduler extern.
-            my_DR_PIFO.my_scheduler(in_flow_id, number_of_levels_used, eligible_time, in_pkt_ptr, in_shaping, in_enq, in_pkt_ptr, in_deq, in_use_updated_rank, in_force_deq, in_force_deq_flow_id, in_enable_error_correction, reset_time);
+		// pass the input data and control signals to the hierarchical scheduler extern.
+        	my_DR_PIFO.my_scheduler(in_flow_id, number_of_levels_used, eligible_time, in_pkt_ptr, in_shaping, in_enq, in_pkt_ptr, in_deq, in_use_updated_rank, in_force_deq, in_force_deq_flow_id, in_enable_error_correction, reset_time);
         }
         
         if (hdr.ipv4.isValid()) {   
